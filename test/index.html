@@ -1,0 +1,71 @@
+<!--
+ * @Autor        : Pat
+ * @Description  : 
+ * @Email        : gouqingping@yahoo.com
+ * @Date         : 2021-12-07 16:21:36
+ * @LastEditors  : Pat
+ * @LastEditTime : 2021-12-08 11:09:50
+-->
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>播放测试</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+    <style>
+        .demo-video {
+            width: 880px;
+            height: 660px;
+        }
+    </style>
+    <script src="./flv.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <video class="demo-video" ref="player" muted autoplay></video>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    id: "1E235950",
+                    rtsp: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
+                    player: null
+                }
+            },
+            mounted() {
+                if (flvjs.isSupported()) {
+                    let video = this.$refs.player;
+                    if (video) {
+                        this.player = flvjs.createPlayer({
+                            type: "flv",
+                            isLive: true,
+                            hasAudio: false,
+                            hasVideo: true,
+                            enableStashBuffer: true,
+                            stashInitialSize: 128,
+                            url: `ws://10.51.102.118:8888/rtsp/${this.id}/?url=${this.rtsp}`
+                        });
+                        this.player.attachMediaElement(video);
+                        try {
+                            this.player.load();
+                            this.player.play();
+                        } catch (error) {
+                            console.log(error);
+                        };
+                    }
+                }
+            },
+            beforeDestroy() {
+                this.player.destory();
+            }
+        });
+    </script>
+</body>
+
+</html>
